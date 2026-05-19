@@ -1,5 +1,6 @@
 """Library functions for repo structure directory verification."""
 
+import logging
 from pathlib import Path
 from typing import Iterator
 
@@ -23,6 +24,8 @@ from .repo_structure_lib import (
     get_matching_item_index,
     check_companion_files,
 )
+
+_LOGGER = logging.getLogger(__name__)
 
 
 class DiffScanProcessor:
@@ -93,8 +96,7 @@ class DiffScanProcessor:
             if not match_result.success:
                 return match_result.issue
 
-            if self.flags.verbose:
-                print(f"  Found match for path '{entry_name}'")
+            _LOGGER.debug("  Found match for path '%s'", entry_name)
 
             # Check for required companion files
             idx = match_result.index
@@ -129,8 +131,7 @@ class DiffScanProcessor:
             if is_dir and map_sub_dir in self.config.directory_map:
                 map_dir = map_sub_dir
 
-        if self.flags.verbose:
-            print(f"Found corresponding map dir for '{path}': '{map_dir}'")
+        _LOGGER.debug("Found corresponding map dir for '%s': '%s'", path, map_dir)
 
         return map_dir
 
@@ -152,8 +153,7 @@ class DiffScanProcessor:
             map_dir_to_rel_dir(map_dir),
         )
         if not backlog:
-            if self.flags.verbose:
-                print("backlog empty - returning success")
+            _LOGGER.debug("backlog empty - returning success")
             return None
 
         base_dir = map_dir_to_rel_dir(map_dir)

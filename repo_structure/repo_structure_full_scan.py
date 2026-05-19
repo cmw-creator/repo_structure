@@ -1,5 +1,6 @@
 """Library functions for repo structure directory verification."""
 
+import logging
 import os
 
 from pathlib import Path
@@ -24,6 +25,8 @@ from .repo_structure_lib import (
     get_matching_item_index,
     check_companion_files,
 )
+
+_LOGGER = logging.getLogger(__name__)
 
 
 class FullScanProcessor:
@@ -102,8 +105,7 @@ class FullScanProcessor:
         for os_entry in entries:
             entry = to_entry(os_entry, rel_dir)
 
-            if self.flags.verbose:
-                print(f"Checking entry {entry.path}")
+            _LOGGER.debug("Checking entry %s", entry.path)
 
             if self._should_skip_entry(entry):
                 continue
@@ -190,8 +192,7 @@ class FullScanProcessor:
         )
 
         if not backlog:
-            if self.flags.verbose:
-                print("backlog empty - returning success")
+            _LOGGER.debug("backlog empty - returning success")
             return errors
 
         # Check repository structure using non-throwing functions
