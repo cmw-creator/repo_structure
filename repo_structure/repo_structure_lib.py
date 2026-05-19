@@ -7,7 +7,8 @@ from os import DirEntry
 from pathlib import Path
 from typing import Callable, Final, Literal
 
-BUILTIN_DIRECTORY_RULES: Final = ["ignore"]
+IGNORE_RULE: Final = "ignore"
+BUILTIN_DIRECTORY_RULES: Final = (IGNORE_RULE,)
 
 
 class ConfigurationParseError(Exception):
@@ -296,7 +297,7 @@ def _build_active_entry_backlog(
 ) -> StructureRuleList:
     result: StructureRuleList = []
     for rule in active_use_rules:
-        if rule == "ignore":
+        if rule in BUILTIN_DIRECTORY_RULES:
             continue
         rules = structure_rules[rule]
         result += rules
